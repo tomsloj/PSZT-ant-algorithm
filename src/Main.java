@@ -59,5 +59,12 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        AntAlgorithm aA = new AntAlgorithm(50);
+        int result[] = aA.solve();
+//        for (int i: result )
+//        {
+//            System.out.println(i);
+//        }
     }
 }
