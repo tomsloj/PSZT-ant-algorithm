@@ -28,14 +28,6 @@ public class AntAlgorithm {
     AntAlgorithm(double[][] m) {
         graph = m;
         this.numberOfNodes = graph.length;
-        for(double[] x :graph){
-            for(double y :x){
-                  System.out.print(y);
-                  System.out.print("\t");
-            }
-            System.out.println();
-        }
-        System.out.println(this.numberOfNodes);
 
         numberOfAnts = (int) (numberOfNodes * antFactor);
 

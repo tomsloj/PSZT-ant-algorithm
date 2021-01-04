@@ -64,20 +64,20 @@ public class Main {
         double graph[][] = readGraph("network_out\\network.txt",2);
         for(double[] x :graph){
             for(double y :x){
-              //  System.out.print(y);
-              //  System.out.print("\t");
+                System.out.print(y);
+                System.out.print("\t");
             }
-           //System.out.println();
+           System.out.println();
         }
 
 
 
         AntAlgorithm aA = new AntAlgorithm(graph);
         int result[] = aA.solve();
-       // for (int i: result )
-       // {
-       //     System.out.println(i);
-       // }
+        for (int i: result )
+        {
+            System.out.println(i);
+        }
 
     }
     public static double[][] readGraph(String path,int version){
@@ -99,7 +99,6 @@ public class Main {
                         data = myReader.nextLine();
                         words = data.split(" ");
                         if(!words[0].equals(")")){
-                            System.out.println(words[4] +" "+words[5]);
                             positionX.add(Double.parseDouble(words[4]));
                             positionY.add(Double.parseDouble(words[5]));
                         }
