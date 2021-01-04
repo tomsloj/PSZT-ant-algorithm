@@ -10,13 +10,13 @@ public class Main {
         System.out.println("Hello World!");
         Reader networkReader = null;
         try {
-            networkReader = new FileReader("H:\\uczelnia\\PSZT\\algorytm_mrówkowy\\norway--D-B-E-N-C-A-N-N-native\\norway--D-B-E-N-C-A-N-N\\norway.txt");
+            networkReader = new FileReader("C:\\Users\\Magda\\Desktop\\Projects\\Java\\Moje\\PSZT-ant-algorithm\\norway--D-B-E-N-C-A-N-N-native\\norway--D-B-E-N-C-A-N-N\\norway.txt");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         Reader modelReader = null;
         try {
-            modelReader = new FileReader("H:\\uczelnia\\PSZT\\algorytm_mrówkowy\\norway--D-B-E-N-C-A-N-N-native\\norway--D-B-E-N-C-A-N-N\\D-B-E-N-C-A-N-N.txt");
+            modelReader = new FileReader("C:\\Users\\Magda\\Desktop\\Projects\\Java\\Moje\\PSZT-ant-algorithm\\norway--D-B-E-N-C-A-N-N-native\\norway--D-B-E-N-C-A-N-N\\D-B-E-N-C-A-N-N.txt");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -42,8 +42,8 @@ public class Main {
         Writer networkWriter = null;
         Writer modelWriter = null;
         try {
-            networkWriter = new FileWriter("H:\\uczelnia\\PSZT\\algorytm_mrówkowy\\network_out\\network.txt");
-            modelWriter = new FileWriter("H:\\uczelnia\\PSZT\\algorytm_mrówkowy\\network_out\\model.txt");
+            networkWriter = new FileWriter("C:\\Users\\Magda\\Desktop\\Projects\\Java\\Moje\\PSZT-ant-algorithm\\network_out\\network.txt");
+            modelWriter = new FileWriter("C:\\Users\\Magda\\Desktop\\Projects\\Java\\Moje\\PSZT-ant-algorithm\\network_out\\model.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
