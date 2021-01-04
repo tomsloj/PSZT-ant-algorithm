@@ -14,7 +14,7 @@ public class AntAlgorithm {
 
     private int numberOfNodes;
     private int numberOfAnts;
-    private int graph[][];
+    private double graph[][];
     private int trails[][];
     private List<Ant> ants = new ArrayList<>();
     private Random random = new Random(0);
@@ -24,11 +24,12 @@ public class AntAlgorithm {
 
     private int[] bestTourOrder;
     private double bestTourLength;
-    AntAlgorithm(int[][] m) {
+
+    AntAlgorithm( double[][] m ) {
         graph = m;
         this.numberOfNodes = graph.length;
 
-        numberOfAnts = (int) (numberOfNodes * antFactor);
+        numberOfAnts = (int) (numberOfNodes * amountOfAntsPerNode);
 
         trails = new int[numberOfNodes][numberOfNodes];
         probabilities = new double[numberOfNodes];

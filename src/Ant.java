@@ -22,8 +22,8 @@ public class Ant
      * @param graph wagi krawedzi w grafie
      * @return dlugosc sciezki
      */
-    public int trailLength(int[][] graph) {
-        int length = graph[trail[nodesNumber - 1]][trail[0]];
+    public double trailLength( double[][] graph ) {
+        double length = graph[trail[nodesNumber - 1]][trail[0]];
         for (int i = 0; i < nodesNumber - 1; i++)
         {
             length += graph[trail[i]][trail[i + 1]];
