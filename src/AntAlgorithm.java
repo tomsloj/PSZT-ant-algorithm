@@ -2,20 +2,20 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 public class AntAlgorithm {
-    private double c = 1.0;
+    private int c = 1;
     private double alpha = 1;
     private double beta = 5;
-    private double evaporation = 0.5;
-    private double Q = 500;
-    private double antFactor = 0.8;
+    private double evaporation = 0.5; //ile feromonow odparowuje w kazdej iteracji
+    private double amountOfAntPheromones = 500; //liczba feromonow zostawiana przez mrowke
+    private double amountOfAntsPerNode = 0.8; //średnia liczba mrowek w jednym wierzcholku
     private double randomFactor = 0.01;
 
     private int numberOfIterations = 1000000;
 
     private int numberOfNodes;
     private int numberOfAnts;
-    private double graph[][];
-    private double trails[][];
+    private int graph[][];
+    private int trails[][];
     private List<Ant> ants = new ArrayList<>();
     private Random random = new Random(0);
     private double probabilities[];
@@ -24,41 +24,47 @@ public class AntAlgorithm {
 
     private int[] bestTourOrder;
     private double bestTourLength;
-
-    AntAlgorithm(double[][] m) {
+    AntAlgorithm(int[][] m) {
         graph = m;
         this.numberOfNodes = graph.length;
 
         numberOfAnts = (int) (numberOfNodes * antFactor);
 
-        trails = new double[numberOfNodes][numberOfNodes];
+        trails = new int[numberOfNodes][numberOfNodes];
         probabilities = new double[numberOfNodes];
-        IntStream.range(0, numberOfAnts)
-                .forEach(i -> ants.add(new Ant(numberOfNodes)));
+        for( int i = 0; i < numberOfAnts; ++i )
+        {
+            ants.add(new Ant(numberOfNodes));
+        }
+//        IntStream.range(0, numberOfAnts)
+//                .forEach(i -> ants.add(new Ant(numberOfNodes)));
         random = new Random();
     }
 
     /**
-     * Generate initial solution
      * tworzy losowy graf
      */
-    public double[][] generateRandomMatrix(int n) {
-        double[][] randomMatrix = new double[n][n];
+    public int[][] generateRandomMatrix(int n) {
+        int[][] randomMatrix = new int[n][n];
         IntStream.range(0, n)
                 .forEach(i -> IntStream.range(0, n)
                         .forEach(j -> randomMatrix[i][j] = Math.abs(random.nextInt(100) + 1)));
         return randomMatrix;
     }
 
+    /**
+     * uruchamia algorytm
+     * @return kolejnosc odwiedzanych wierzcholkow na najlepszej sciezce
+     */
     public int[] solve() {
         setupAnts();
         clearTrails();
-        IntStream.range(0, numberOfIterations)
-                .forEach(i -> {
-                    moveAnts();
-                    updateTrails();
-                    updateBest();
-                });
+        for( int i = 0; i < numberOfIterations; ++i )
+        {
+            moveAnts();
+            updateTrails();
+            updateBest();
+        }
         System.out.println("Best tour length: " + (bestTourLength - numberOfNodes));
         System.out.println("Best tour order: " + Arrays.toString(bestTourOrder));
         return bestTourOrder.clone();
@@ -72,7 +78,7 @@ public class AntAlgorithm {
         IntStream.range(0, numberOfAnts)
                 .forEach(i -> {
                     ants.forEach(ant -> {
-                        ant.clearVisited();
+                        ant.clearVisitedArray();
                         ant.visitNode(-1, random.nextInt(numberOfNodes));
                     });
                 });
@@ -80,27 +86,30 @@ public class AntAlgorithm {
     }
 
     /**
-     * At each iteration, move ants
+     * przesowamy kazda mrowke
      */
     private void moveAnts() {
         IntStream.range(currentIndex, numberOfNodes - 1)
                 .forEach(i -> {
-                    ants.forEach(ant -> ant.visitNode(currentIndex, selectNextCity(ant)));
+                    ants.forEach(ant -> ant.visitNode(currentIndex, selectNextNode(ant)));
                     currentIndex++;
                 });
     }
 
     /**
-     * Select next city for each ant
+     * znajdujemy nastepny wierzcholek na ktory powinna pojsc mrowka
+     * @param ant mrowka dla ktorej szukamy nastepnego wierzcholka
+     * @return index nastepnego wierzcholka do ktorego pojdzie mrowka
      */
-    private int selectNextCity(Ant ant) {
+    private int selectNextNode(Ant ant) {
         int t = random.nextInt(numberOfNodes - currentIndex);
+        //bierzemy losowy wierzcholek
         if (random.nextDouble() < randomFactor) {
-            OptionalInt cityIndex = IntStream.range(0, numberOfNodes)
-                    .filter(i -> i == t && !ant.visited(i))
+            OptionalInt nodeIndex = IntStream.range(0, numberOfNodes)
+                    .filter(i -> i == t && !ant.isVisited(i))
                     .findFirst();
-            if (cityIndex.isPresent()) {
-                return cityIndex.getAsInt();
+            if (nodeIndex.isPresent()) {
+                return nodeIndex.getAsInt();
             }
         }
         calculateProbabilities(ant);
@@ -117,20 +126,26 @@ public class AntAlgorithm {
     }
 
     /**
-     * Calculate the next city picks probabilites
+     * oblicz prawdomodobienstwa dojscia do kolejnego wierzcholka
      */
     public void calculateProbabilities(Ant ant) {
         int i = ant.trail[currentIndex];
         double pheromone = 0.0;
-        for (int l = 0; l < numberOfNodes; l++) {
-            if (!ant.visited(l)) {
-                pheromone += Math.pow(trails[i][l], alpha) * Math.pow(1.0 / graph[i][l], beta);
+        for (int j = 0; j < numberOfNodes; j++)
+        {
+            if (!ant.isVisited(j)) {
+                pheromone += Math.pow(trails[i][j], alpha) * Math.pow(1.0 / graph[i][j], beta);
             }
         }
-        for (int j = 0; j < numberOfNodes; j++) {
-            if (ant.visited(j)) {
+        for (int j = 0; j < numberOfNodes; j++)
+        {
+            //TODO dodanie warunku, ze prawdopodobienstwo = 0 gdzu nie ma krawedzi
+            if (ant.isVisited(j))
+            {
                 probabilities[j] = 0.0;
-            } else {
+            }
+            else
+            {
                 double numerator = Math.pow(trails[i][j], alpha) * Math.pow(1.0 / graph[i][j], beta);
                 probabilities[j] = numerator / pheromone;
             }
@@ -138,25 +153,29 @@ public class AntAlgorithm {
     }
 
     /**
-     * Update trails that ants used
+     * aktualizujemy sciezki i wyparowane feromony
      */
     private void updateTrails() {
-        for (int i = 0; i < numberOfNodes; i++) {
-            for (int j = 0; j < numberOfNodes; j++) {
+        for (int i = 0; i < numberOfNodes; i++)
+        {
+            for (int j = 0; j < numberOfNodes; j++)
+            {
                 trails[i][j] *= evaporation;
             }
         }
-        for (Ant a : ants) {
-            double contribution = Q / a.trailLength(graph);
-            for (int i = 0; i < numberOfNodes - 1; i++) {
-                trails[a.trail[i]][a.trail[i + 1]] += contribution;
+        for (Ant ant : ants)
+        {
+            double contribution = amountOfAntPheromones / ant.trailLength(graph);
+            for (int i = 0; i < numberOfNodes - 1; i++)
+            {
+                trails[ant.trail[i]][ant.trail[i + 1]] += contribution;
             }
-            trails[a.trail[numberOfNodes - 1]][a.trail[0]] += contribution;
+            trails[ant.trail[numberOfNodes - 1]][ant.trail[0]] += contribution;
         }
     }
 
     /**
-     * Update the best solution
+     * aktualizujemy najlepsze rozwiazanie
      */
     private void updateBest() {
         if (bestTourOrder == null) {
@@ -173,7 +192,7 @@ public class AntAlgorithm {
     }
 
     /**
-     * Clear trails after simulation
+     * czyscimy sciezki
      */
     private void clearTrails() {
         IntStream.range(0, numberOfNodes)

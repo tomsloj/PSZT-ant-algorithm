@@ -62,8 +62,8 @@ a {
    line-height:      16px;
 }
 
-/* Links already visited */
-/*a:visited { color:     #111111; }*/
+/* Links already isVisited */
+/*a:isVisited { color:     #111111; }*/
 
 /* Links which focus on them */
 a:focus { color:     #CC3300; }
