@@ -3,6 +3,7 @@ import sndlib.core.model.Model;
 import sndlib.core.network.Network;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -60,7 +61,7 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        double graph[][] = readGraphOne("network_out\\network.txt");
+        double graph[][] = readGraph("network_out\\network.txt",2);
         for(double[] x :graph){
             for(double y :x){
               //  System.out.print(y);
@@ -70,11 +71,7 @@ public class Main {
         }
 
 
-        double [][] g = new double[2][2];
-        g[0][0] = 1;
-        g[1][1] = 2;
-        g[0][1] = 3;
-        g[1][0] = 4;
+
         AntAlgorithm aA = new AntAlgorithm(graph);
         int result[] = aA.solve();
        // for (int i: result )
@@ -83,12 +80,14 @@ public class Main {
        // }
 
     }
-    public static double[][] readGraphOne(String path){
+    public static double[][] readGraph(String path,int version){
 
 
         String[] words = null;
         int numberOfNodes = 0;
         double[][] graph = new double[0][];
+        ArrayList<Double> positionX = new ArrayList<>();
+        ArrayList<Double> positionY = new ArrayList<>();
         try {
             File myObj = new File(path);
             Scanner myReader = new Scanner(myObj);
@@ -99,6 +98,11 @@ public class Main {
                     while(!words[0].equals(")")){
                         data = myReader.nextLine();
                         words = data.split(" ");
+                        if(!words[0].equals(")")){
+                            System.out.println(words[4] +" "+words[5]);
+                            positionX.add(Double.parseDouble(words[4]));
+                            positionY.add(Double.parseDouble(words[5]));
+                        }
                         numberOfNodes = numberOfNodes +1;
                     }
                     numberOfNodes = numberOfNodes -1;
@@ -116,8 +120,8 @@ public class Main {
                         if(!words[0].equals(")")){
                             String left = words[4].substring(1);
                             String right = words[5].substring(1);
-                            graph[Integer.parseInt(left)-1][Integer.parseInt(right)-1] = 1;
-                            graph[Integer.parseInt(right)-1][Integer.parseInt(left)-1] = 1;
+                            graph[Integer.parseInt(left)-1][Integer.parseInt(right)-1] = weight(version,positionX,positionY,left,right);
+                            graph[Integer.parseInt(right)-1][Integer.parseInt(left)-1] = weight(version,positionX,positionY,left,right);
                         }
                     }
                 }
@@ -129,5 +133,12 @@ public class Main {
             e.printStackTrace();
         }
         return graph;
+    }
+    public static double weight(int version,ArrayList<Double> posX , ArrayList<Double> posY ,String left , String right ){
+        if(version==1)
+            return 1;
+        double lengthX = Math.abs(posX.get(Integer.parseInt(right)-1) -posX.get(Integer.parseInt(left)-1) );
+        double lengthY = Math.abs(posY.get(Integer.parseInt(right)-1) -posY.get(Integer.parseInt(left)-1) );
+        return Math.sqrt(Math.pow(lengthX,2) +Math.pow(lengthY,2));
     }
 }
