@@ -43,17 +43,6 @@ public class AntAlgorithm {
     }
 
     /**
-     * tworzy losowy graf
-     */
-    public int[][] generateRandomMatrix(int n) {
-        int[][] randomMatrix = new int[n][n];
-        IntStream.range(0, n)
-                .forEach(i -> IntStream.range(0, n)
-                        .forEach(j -> randomMatrix[i][j] = Math.abs(random.nextInt(100) + 1)));
-        return randomMatrix;
-    }
-
-    /**
      * uruchamia algorytm
      * @return kolejnosc odwiedzanych wierzcholkow na najlepszej sciezce
      */
@@ -73,16 +62,17 @@ public class AntAlgorithm {
 
 
     /**
-     * Prepare ants for the simulation
+     * przygotowanie mrowek do symulacji
      */
     private void setupAnts() {
-        IntStream.range(0, numberOfAnts)
-                .forEach(i -> {
-                    ants.forEach(ant -> {
-                        ant.clearVisitedArray();
-                        ant.visitNode(-1, random.nextInt(numberOfNodes));
-                    });
-                });
+        for( int i = 0; i < numberOfAnts; ++i )
+        {
+            for( Ant ant: ants )
+            {
+                ant.clearVisitedArray();
+                ant.visitNode(-1, random.nextInt(numberOfNodes));
+            }
+        }
         currentIndex = 0;
     }
 
@@ -90,11 +80,14 @@ public class AntAlgorithm {
      * przesowamy kazda mrowke
      */
     private void moveAnts() {
-        IntStream.range(currentIndex, numberOfNodes - 1)
-                .forEach(i -> {
-                    ants.forEach(ant -> ant.visitNode(currentIndex, selectNextNode(ant)));
-                    currentIndex++;
-                });
+        for( int i = currentIndex; i < numberOfNodes - 1; ++i )
+        {
+            for( Ant ant: ants )
+            {
+                ant.visitNode(currentIndex, selectNextNode(ant));
+            }
+            currentIndex++;
+        }
     }
 
     /**
@@ -196,10 +189,12 @@ public class AntAlgorithm {
      * czyscimy sciezki
      */
     private void clearTrails() {
-        IntStream.range(0, numberOfNodes)
-                .forEach(i -> {
-                    IntStream.range(0, numberOfNodes)
-                            .forEach(j -> trails[i][j] = c);
-                });
+        for( int i = 0; i < numberOfNodes; ++i )
+        {
+            for( int j = 0; j < numberOfNodes; ++j )
+            {
+                trails[i][j] = c;
+            }
+        }
     }
 }
