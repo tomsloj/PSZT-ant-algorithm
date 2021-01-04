@@ -25,9 +25,10 @@ public class AntAlgorithm {
     private int[] bestTourOrder;
     private double bestTourLength;
 
-    AntAlgorithm(int numberOfNodes) {
-        graph = generateRandomMatrix(numberOfNodes);
-        this.numberOfNodes = numberOfNodes;//graph.length;
+    AntAlgorithm(double[][] m) {
+        graph = m;
+        this.numberOfNodes = graph.length;
+
         numberOfAnts = (int) (numberOfNodes * antFactor);
 
         trails = new double[numberOfNodes][numberOfNodes];
