@@ -6,11 +6,11 @@ public class AntAlgorithm {
     private double alpha = 1;
     private double beta = 5;
     private double evaporation = 0.5; //ile feromonow odparowuje w kazdej iteracji
-    private double amountOfAntPheromones = 500; //liczba feromonow zostawiana przez mrowke
+    private double amountOfAntPheromones = 1000; //liczba feromonow zostawiana przez mrowke
     private double amountOfAntsPerNode = 0.8; //średnia liczba mrowek w jednym wierzcholku
     private double randomFactor = 0.01;
 
-    private int numberOfIterations = 1000000;
+    private int numberOfIterations = 1000;
 
     private int numberOfNodes;
     private int numberOfAnts;
@@ -30,8 +30,8 @@ public class AntAlgorithm {
     AntAlgorithm( double[][] m , int startCity , int endCity) {
         graph = m;
         this.numberOfNodes = graph.length;
-        this.startCity = startCity;
-        this.endCity = endCity;
+        this.startCity = startCity-1;
+        this.endCity = endCity-1;
 
         numberOfAnts = (int) (numberOfNodes * amountOfAntsPerNode);
 
@@ -62,16 +62,22 @@ public class AntAlgorithm {
      * @return kolejnosc odwiedzanych wierzcholkow na najlepszej sciezce
      */
     public int[] solve() {
-        setupAnts();
         clearTrails();
-        for( int i = 0; i < numberOfIterations; ++i )
+        for( int i = 0; i < numberOfIterations; ++i ) // numberOfIterations
         {
+            setupAnts();
             moveAnts();
             updateTrails();
+            //System.out.println(Arrays.deepToString(trails));
             updateBest();
         }
-        System.out.println("Best tour length: " + (bestTourLength - numberOfNodes));
-        System.out.println("Best tour order: " + Arrays.toString(bestTourOrder));
+        List<Integer> citiesOrder = new ArrayList<>();
+        for(int i = 0 ; i<bestTourOrder.length;i++){
+            if(bestTourOrder[i]!=-1)
+                citiesOrder.add(bestTourOrder[i]+1);
+        }
+        System.out.println("Best tour weight: " + bestTourLength );
+        System.out.println("Best tour order: " + Arrays.toString(citiesOrder.toArray()));
         return bestTourOrder.clone();
     }
 
@@ -80,13 +86,13 @@ public class AntAlgorithm {
      * Prepare ants for the simulation
      */
     private void setupAnts() {
-        for( int i = 0; i < numberOfAnts; ++i )
-        {
+       // for( int i = 0; i < numberOfAnts; ++i )
+       // {
             for(Ant ant :ants){
                 ant.clearVisitedArray();
                 ant.visitNode(-1, startCity);
             }
-        }
+       // }
         currentIndex = 0;
        /* IntStream.range(0, numberOfAnts)
                 .forEach(i -> {
@@ -102,11 +108,18 @@ public class AntAlgorithm {
      * przesowamy kazda mrowke
      */
     private void moveAnts() {
-        IntStream.range(currentIndex, numberOfNodes - 1)
+        for(int i = currentIndex ; i<numberOfNodes - 1;i++ ){
+        for(Ant ant : ants){
+            if(!ant.isVisited(endCity))
+                ant.visitNode(currentIndex,selectNextNode(ant));
+        }
+        currentIndex++;
+        }
+        /*IntStream.range(currentIndex, numberOfNodes - 1)
                 .forEach(i -> {
                     ants.forEach(ant -> ant.visitNode(currentIndex, selectNextNode(ant)));
                     currentIndex++;
-                });
+                });*/
     }
 
     /**
@@ -126,11 +139,17 @@ public class AntAlgorithm {
             }
         }
         calculateProbabilities(ant);
+        //System.out.println(Arrays.toString(probabilities));
         double r = random.nextDouble();
         double total = 0;
         for (int i = 0; i < numberOfNodes; i++) {
             total += probabilities[i];
             if (total >= r) {
+                return i;
+            }
+        }
+        for(int i = 0 ;i<numberOfNodes;i++){
+            if(!ant.isVisited(i)){
                 return i;
             }
         }
@@ -181,9 +200,10 @@ public class AntAlgorithm {
             double contribution = amountOfAntPheromones / ant.trailLength(graph);
             for (int i = 0; i < numberOfNodes - 1; i++)
             {
-                trails[ant.trail[i]][ant.trail[i + 1]] += contribution;
+                if(ant.trail[i]!=-1 && ant.trail[i+1]!=-1)
+                    trails[ant.trail[i]][ant.trail[i + 1]] += contribution;
             }
-            trails[ant.trail[numberOfNodes - 1]][ant.trail[0]] += contribution;
+            //trails[ant.trail[numberOfNodes - 1]][ant.trail[0]] += contribution;
         }
     }
 

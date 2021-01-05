@@ -15,6 +15,7 @@ public class Ant
         trail = new int[nodesNumber];
 
         Arrays.fill(visited, false);
+        Arrays.fill(trail, -1);
     }
 
     /**
@@ -23,10 +24,13 @@ public class Ant
      * @return dlugosc sciezki
      */
     public double trailLength( double[][] graph ) {
-        double length = graph[trail[nodesNumber - 1]][trail[0]];
+        double length = 0;//graph[trail[nodesNumber - 1]][trail[0]];
         for (int i = 0; i < nodesNumber - 1; i++)
         {
-            length += graph[trail[i]][trail[i + 1]];
+            if(trail[i+1]!=-1){
+                length += graph[trail[i]][trail[i + 1]];
+            }
+
         }
         return length;
     }
@@ -48,6 +52,7 @@ public class Ant
     public void clearVisitedArray()
     {
         Arrays.fill(visited, false);
+        Arrays.fill(trail, -1);
     }
 
 

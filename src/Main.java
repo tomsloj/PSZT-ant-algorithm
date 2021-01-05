@@ -72,7 +72,7 @@ public class Main {
 
 
 
-        AntAlgorithm aA = new AntAlgorithm(graph,1,10);
+        AntAlgorithm aA = new AntAlgorithm(graph,1,20);
         int result[] = aA.solve();
 
     }
