@@ -17,21 +17,21 @@ public class AntAlgorithm {
     private double graph[][];
     private int trails[][];
     private List<Ant> ants = new ArrayList<>();
-    private Random random = new Random(0);
+    private Random random;
     private double probabilities[];
-    private int startCity;
-    private int endCity;
+    private int startNode;
+    private int endNode;
 
     private int currentIndex;
 
     private int[] bestTourOrder;
     private double bestTourLength;
 
-    AntAlgorithm( double[][] m , int startCity , int endCity) {
+    AntAlgorithm( double[][] m , int startNode , int endNode, int seed ) {
         graph = m;
         this.numberOfNodes = graph.length;
-        this.startCity = startCity-1;
-        this.endCity = endCity-1;
+        this.startNode = startNode - 1;
+        this.endNode = endNode - 1;
 
         numberOfAnts = (int) (numberOfNodes * amountOfAntsPerNode);
 
@@ -41,9 +41,7 @@ public class AntAlgorithm {
         {
             ants.add(new Ant(numberOfNodes));
         }
-//        IntStream.range(0, numberOfAnts)
-//                .forEach(i -> ants.add(new Ant(numberOfNodes)));
-        random = new Random();
+        random = new Random(seed);
     }
 
     /**
@@ -57,7 +55,6 @@ public class AntAlgorithm {
             setupAnts();
             moveAnts();
             updateTrails();
-            //System.out.println(Arrays.deepToString(trails));
             updateBest();
         }
         List<Integer> citiesOrder = new ArrayList<>();
@@ -65,8 +62,8 @@ public class AntAlgorithm {
             if(bestTourOrder[i]!=-1)
                 citiesOrder.add(bestTourOrder[i]+1);
         }
-        System.out.println("Best tour weight: " + bestTourLength );
-        System.out.println("Best tour order: " + Arrays.toString(citiesOrder.toArray()));
+        System.out.println("Długość najlepszej ścieżki: " + bestTourLength );
+        System.out.println("Najlepsza ścieżka: " + Arrays.toString(citiesOrder.toArray()));
         return bestTourOrder.clone();
     }
 
@@ -77,7 +74,7 @@ public class AntAlgorithm {
     private void setupAnts() {
             for(Ant ant :ants){
                 ant.clearVisitedArray();
-                ant.visitNode(-1, startCity);
+                ant.visitNode(-1, startNode);
             }
         currentIndex = 0;
     }
@@ -89,17 +86,11 @@ public class AntAlgorithm {
 
         for(int i = currentIndex ; i<numberOfNodes - 1;i++ ){
         for(Ant ant : ants){
-            if(!ant.isVisited(endCity))
+            if(!ant.isVisited(endNode))
                 ant.visitNode(currentIndex,selectNextNode(ant));
         }
         currentIndex++;
         }
-        /*IntStream.range(currentIndex, numberOfNodes - 1)
-                .forEach(i -> {
-                    ants.forEach(ant -> ant.visitNode(currentIndex, selectNextNode(ant)));
-                    currentIndex++;
-                });*/
-
     }
 
     /**
@@ -112,14 +103,13 @@ public class AntAlgorithm {
         //bierzemy losowy wierzcholek
         if (random.nextDouble() < randomFactor) {
             OptionalInt nodeIndex = IntStream.range(0, numberOfNodes)
-                    .filter(i -> i == t && !ant.isVisited(i))
+                    .filter(i -> i == t && !ant.isVisited(i) && graph[ant.trail[currentIndex]][i] > 0)
                     .findFirst();
             if (nodeIndex.isPresent()) {
                 return nodeIndex.getAsInt();
             }
         }
         calculateProbabilities(ant);
-        //System.out.println(Arrays.toString(probabilities));
         double r = random.nextDouble();
         double total = 0;
         for (int i = 0; i < numberOfNodes; i++) {
@@ -145,14 +135,13 @@ public class AntAlgorithm {
         double pheromone = 0.0;
         for (int j = 0; j < numberOfNodes; j++)
         {
-            if (!ant.isVisited(j)) {
+            if (!ant.isVisited(j) && graph[i][j] > 0 ) {
                 pheromone += Math.pow(trails[i][j], alpha) * Math.pow(1.0 / graph[i][j], beta);
             }
         }
         for (int j = 0; j < numberOfNodes; j++)
         {
-            //TODO dodanie warunku, ze prawdopodobienstwo = 0 gdzu nie ma krawedzi
-            if (ant.isVisited(j))
+            if (ant.isVisited(j) || graph[i][j] < 0)
             {
                 probabilities[j] = 0.0;
             }

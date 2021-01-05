@@ -18,7 +18,7 @@ public class Main {
 
         System.out.println("Liczę...");
 
-        AntAlgorithm aA = new AntAlgorithm(graph,startNode,endNode);
+        AntAlgorithm aA = new AntAlgorithm(graph, startNode, endNode, 0);
         int result[] = aA.solve();
 
     }
