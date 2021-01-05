@@ -1,25 +1,38 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args)
     {
-
         double graph[][] = readGraph("network\\network.txt",2);
 
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("podaj wierzcholek poczatkowy (1-" + graph.length + ")");
-        int startNode = scanner.nextInt();
-        System.out.println("podaj wierzcholek koncowy");
-        int endNode = scanner.nextInt();
+        System.out.println("Wybierz tryb");
+        System.out.println("1 - pojedyncze uruchomienie");
+        System.out.println("2 - testowanie wydajnosci");
+        int mode = scanner.nextInt();
 
-        System.out.println("Liczę...");
+        if( mode == 1 )
+        {
+            System.out.println("podaj wierzcholek poczatkowy (1-" + graph.length + ")");
+            int startNode = scanner.nextInt();
+            System.out.println("podaj wierzcholek koncowy");
+            int endNode = scanner.nextInt();
 
-        AntAlgorithm aA = new AntAlgorithm(graph, startNode, endNode, 0);
-        int result[] = aA.solve();
+            System.out.println("Liczę...");
+
+            AntAlgorithm aA = new AntAlgorithm(graph, startNode, endNode, 0);
+            aA.solve();
+
+            System.out.println("Długość najlepszej ścieżki: " + aA.getPathLenght() );
+            System.out.println("Najlepsza ścieżka: " + Arrays.toString(aA.getPath()));
+        }
+
+
 
     }
     public static double[][] readGraph(String path,int version){

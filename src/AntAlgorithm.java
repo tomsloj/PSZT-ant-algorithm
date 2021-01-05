@@ -44,11 +44,29 @@ public class AntAlgorithm {
         random = new Random(seed);
     }
 
+    public int[] getPath()
+    {
+        int i = 0;
+        while(bestTourOrder[i] != -1)
+            ++i;
+        int array[] = Arrays.copyOfRange(bestTourOrder, 0, i);
+        for(int j = 0; j < array.length; ++j )
+        {
+            array[j] += 1;
+        }
+        return array;
+    }
+
+    public double getPathLenght()
+    {
+        return bestTourLength;
+    }
+
     /**
      * uruchamia algorytm
      * @return kolejnosc odwiedzanych wierzcholkow na najlepszej sciezce
      */
-    public int[] solve() {
+    public void solve() {
         clearTrails();
         for( int i = 0; i < numberOfIterations; ++i ) // numberOfIterations
         {
@@ -62,9 +80,6 @@ public class AntAlgorithm {
             if(bestTourOrder[i]!=-1)
                 citiesOrder.add(bestTourOrder[i]+1);
         }
-        System.out.println("Długość najlepszej ścieżki: " + bestTourLength );
-        System.out.println("Najlepsza ścieżka: " + Arrays.toString(citiesOrder.toArray()));
-        return bestTourOrder.clone();
     }
 
 
@@ -172,7 +187,6 @@ public class AntAlgorithm {
                 if(ant.trail[i]!=-1 && ant.trail[i+1]!=-1)
                     trails[ant.trail[i]][ant.trail[i + 1]] += contribution;
             }
-            //trails[ant.trail[numberOfNodes - 1]][ant.trail[0]] += contribution;
         }
     }
 
