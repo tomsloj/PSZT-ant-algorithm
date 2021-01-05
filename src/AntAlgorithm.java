@@ -19,15 +19,19 @@ public class AntAlgorithm {
     private List<Ant> ants = new ArrayList<>();
     private Random random = new Random(0);
     private double probabilities[];
+    private int startCity;
+    private int endCity;
 
     private int currentIndex;
 
     private int[] bestTourOrder;
     private double bestTourLength;
 
-    AntAlgorithm( double[][] m ) {
+    AntAlgorithm( double[][] m , int startCity , int endCity) {
         graph = m;
         this.numberOfNodes = graph.length;
+        this.startCity = startCity;
+        this.endCity = endCity;
 
         numberOfAnts = (int) (numberOfNodes * amountOfAntsPerNode);
 
@@ -76,14 +80,22 @@ public class AntAlgorithm {
      * Prepare ants for the simulation
      */
     private void setupAnts() {
-        IntStream.range(0, numberOfAnts)
+        for( int i = 0; i < numberOfAnts; ++i )
+        {
+            for(Ant ant :ants){
+                ant.clearVisitedArray();
+                ant.visitNode(-1, startCity);
+            }
+        }
+        currentIndex = 0;
+       /* IntStream.range(0, numberOfAnts)
                 .forEach(i -> {
                     ants.forEach(ant -> {
                         ant.clearVisitedArray();
                         ant.visitNode(-1, random.nextInt(numberOfNodes));
                     });
                 });
-        currentIndex = 0;
+        currentIndex = 0;*/
     }
 
     /**
