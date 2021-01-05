@@ -72,12 +72,8 @@ public class Main {
 
 
 
-        AntAlgorithm aA = new AntAlgorithm(graph);
+        AntAlgorithm aA = new AntAlgorithm(graph,1,20);
         int result[] = aA.solve();
-        for (int i: result )
-        {
-            System.out.println(i);
-        }
 
     }
     public static double[][] readGraph(String path,int version){
@@ -110,7 +106,7 @@ public class Main {
                     graph = new double[numberOfNodes][numberOfNodes];
                     for(int x = 0 ; x<graph.length;x++){
                         for(int y=0 ; y<graph.length;y++){
-                            graph[x][y] = 0;
+                            graph[x][y] = 10;
                         }
                     }
                     while(!words[0].equals(")")){
