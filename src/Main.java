@@ -1,78 +1,24 @@
-import sndlib.core.io.*;
-import sndlib.core.model.Model;
-import sndlib.core.network.Network;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) {
-        System.out.println("Hello World!");
-        Reader networkReader = null;
-        try {
-            networkReader = new FileReader("norway--D-B-E-N-C-A-N-N-native\\norway--D-B-E-N-C-A-N-N\\norway.txt");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        Reader modelReader = null;
-        try {
-            modelReader = new FileReader("norway--D-B-E-N-C-A-N-N-native\\norway--D-B-E-N-C-A-N-N\\D-B-E-N-C-A-N-N.txt");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+    public static void main(String[] args)
+    {
 
-        // get the appropriate parser, e.g. for the native format
-        SNDlibParser parser = SNDlibIOFactory.newParser(SNDlibIOFormat.NATIVE);
+        double graph[][] = readGraph("network\\network.txt",2);
 
-        Network network = null;
-        Model model = null;
-        try {
-            network = parser.parseNetwork(networkReader);
-            model = parser.parseModel(modelReader);
-        }
-        catch(SNDlibParseException spx) {
-            System.err.println("could not parse network or model file: " + spx);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Scanner scanner = new Scanner(System.in);
 
-        // get the appropriate writer, e.g. for the native format
-        SNDlibWriter writer = SNDlibIOFactory.newWriter(SNDlibIOFormat.NATIVE);
+        System.out.println("podaj wierzcholek poczatkowy (1-" + graph.length + ")");
+        int startNode = scanner.nextInt();
+        System.out.println("podaj wierzcholek koncowy");
+        int endNode = scanner.nextInt();
 
-        Writer networkWriter = null;
-        Writer modelWriter = null;
-        try {
-            networkWriter = new FileWriter("network_out\\network.txt");
-            modelWriter = new FileWriter("network_out\\model.txt");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println("Liczę...");
 
-        try {
-            writer.writeNetwork(network, networkWriter);
-            writer.writeModel(model, modelWriter);
-            networkWriter.close();
-            modelWriter.close();
-        }
-        catch(SNDlibWriteException swx) {
-            System.err.println("could not write network or model file: " + swx);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        double graph[][] = readGraph("network_out\\network.txt",2);
-        for(double[] x :graph){
-            for(double y :x){
-                System.out.print(y);
-                System.out.print("\t");
-            }
-           System.out.println();
-        }
-
-
-
-        AntAlgorithm aA = new AntAlgorithm(graph,1,20);
+        AntAlgorithm aA = new AntAlgorithm(graph,startNode,endNode);
         int result[] = aA.solve();
 
     }
@@ -106,7 +52,7 @@ public class Main {
                     graph = new double[numberOfNodes][numberOfNodes];
                     for(int x = 0 ; x<graph.length;x++){
                         for(int y=0 ; y<graph.length;y++){
-                            graph[x][y] = 10;
+                            graph[x][y] = -1.0;
                         }
                     }
                     while(!words[0].equals(")")){
