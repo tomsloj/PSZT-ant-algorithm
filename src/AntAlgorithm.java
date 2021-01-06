@@ -10,7 +10,7 @@ public class AntAlgorithm {
     private double amountOfAntsPerNode = 1.0; //średnia liczba mrowek w jednym wierzcholku
     private double randomFactor = 0.01;
 
-    private int numberOfIterations = 1000;
+    private int numberOfIterations;
 
     private int numberOfNodes;
     private int numberOfAnts;
@@ -27,11 +27,12 @@ public class AntAlgorithm {
     private int[] bestTourOrder;
     private double bestTourLength;
 
-    AntAlgorithm( double[][] m , int startNode , int endNode, int seed ) {
+    AntAlgorithm( double[][] m , int startNode , int endNode, int numberOfIterations, int seed ) {
         graph = m;
         this.numberOfNodes = graph.length;
         this.startNode = startNode - 1;
         this.endNode = endNode - 1;
+        this.numberOfIterations = numberOfIterations;
 
         numberOfAnts = (int) (numberOfNodes * amountOfAntsPerNode);
 
@@ -44,11 +45,51 @@ public class AntAlgorithm {
         random = new Random(seed);
     }
 
+    AntAlgorithm( double[][] m , int startNode , int endNode, int numberOfIterations, int seed,
+                  double alpha, double beta, double evaporation ) {
+        graph = m;
+        this.numberOfNodes = graph.length;
+        this.startNode = startNode - 1;
+        this.endNode = endNode - 1;
+        this.numberOfIterations = numberOfIterations;
+        this.alpha = alpha;
+        this.beta = beta;
+        this.evaporation = evaporation;
+
+        numberOfAnts = (int) (numberOfNodes * amountOfAntsPerNode);
+
+        trails = new int[numberOfNodes][numberOfNodes];
+        probabilities = new double[numberOfNodes];
+        for( int i = 0; i < numberOfAnts; ++i )
+        {
+            ants.add(new Ant(numberOfNodes));
+        }
+        random = new Random(seed);
+    }
+
+    public int[] getPath()
+    {
+        int i = 0;
+        while(bestTourOrder[i] != -1)
+            ++i;
+        int array[] = Arrays.copyOfRange(bestTourOrder, 0, i);
+        for(int j = 0; j < array.length; ++j )
+        {
+            array[j] += 1;
+        }
+        return array;
+    }
+
+    public double getPathLenght()
+    {
+        return bestTourLength;
+    }
+
     /**
      * uruchamia algorytm
      * @return kolejnosc odwiedzanych wierzcholkow na najlepszej sciezce
      */
-    public int[] solve() {
+    public void solve() {
         clearTrails();
         for( int i = 0; i < numberOfIterations; ++i ) // numberOfIterations
         {
@@ -62,9 +103,6 @@ public class AntAlgorithm {
             if(bestTourOrder[i]!=-1)
                 citiesOrder.add(bestTourOrder[i]+1);
         }
-        System.out.println("Długość najlepszej ścieżki: " + bestTourLength );
-        System.out.println("Najlepsza ścieżka: " + Arrays.toString(citiesOrder.toArray()));
-        return bestTourOrder.clone();
     }
 
 
