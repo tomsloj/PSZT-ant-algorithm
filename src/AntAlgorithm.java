@@ -7,7 +7,7 @@ public class AntAlgorithm {
     private double beta = 5;
     private double evaporation = 0.5; //ile feromonow odparowuje w kazdej iteracji
     private double amountOfAntPheromones = 1000; //liczba feromonow zostawiana przez mrowke
-    private double amountOfAntsPerNode = 0.8; //średnia liczba mrowek w jednym wierzcholku
+    private double amountOfAntsPerNode = 1.0; //średnia liczba mrowek w jednym wierzcholku
     private double randomFactor = 0.01;
 
     private int numberOfIterations = 1000;
@@ -72,10 +72,12 @@ public class AntAlgorithm {
      * przygotowanie mrowek do symulacji
      */
     private void setupAnts() {
-            for(Ant ant :ants){
-                ant.clearVisitedArray();
-                ant.visitNode(-1, startNode);
-            }
+        for( int i = 0; i < ants.size(); ++i )
+        {
+            ants.get(i).clearVisitedArray();
+            //ostatnia mrówka będzie mrówką pomiarową
+            ants.get(i).visitNode(-1, ants.size() - i - 1 );
+        }
         currentIndex = 0;
     }
 
@@ -172,7 +174,6 @@ public class AntAlgorithm {
                 if(ant.trail[i]!=-1 && ant.trail[i+1]!=-1)
                     trails[ant.trail[i]][ant.trail[i + 1]] += contribution;
             }
-            //trails[ant.trail[numberOfNodes - 1]][ant.trail[0]] += contribution;
         }
     }
 
@@ -181,15 +182,15 @@ public class AntAlgorithm {
      */
     private void updateBest() {
         if (bestTourOrder == null) {
-            bestTourOrder = ants.get(0).trail;
-            bestTourLength = ants.get(0)
+            bestTourOrder = ants.get( ants.size() - 1 ).trail;
+            bestTourLength = ants.get( ants.size() - 1 )
                     .trailLength(graph);
         }
-        for (Ant a : ants) {
-            if (a.trailLength(graph) < bestTourLength) {
-                bestTourLength = a.trailLength(graph);
-                bestTourOrder = a.trail.clone();
-            }
+        Ant a = ants. get(ants.size() - 1);
+        if (a.trailLength(graph) < bestTourLength)
+        {
+            bestTourLength = a.trailLength(graph);
+            bestTourOrder = a.trail.clone();
         }
     }
 
