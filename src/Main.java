@@ -1,89 +1,107 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args)
     {
-        double graph[][] = readGraph("network\\network.txt",2);
-
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("podaj wierzcholek poczatkowy (1-" + graph.length + ")");
-        int startNode = scanner.nextInt();
-        System.out.println("podaj wierzcholek koncowy");
-        int endNode = scanner.nextInt();
-        System.out.println("podaj liczbe iteracji");
-        int numberOfIterations = scanner.nextInt();
-        System.out.println("podaj ziarno");
-        int seed = scanner.nextInt();
+        System.out.println("Wybierz rodzaj wag:");
+        System.out.println("1 - wszystkie wagi równe 1");
+        System.out.println("2 - wagi równe odległości wierzchołków");
+        try {
+            int version = scanner.nextInt();
 
-        System.out.println("Wybierz tryb");
-        System.out.println("1 - pojedyncze uruchomienie");
-        System.out.println("2 - testowanie wydajnosci");
-        int mode = scanner.nextInt();
+            double graph[][] = readGraph("network\\network.txt", version);
 
-        if( mode == 1 )
-        {
-            System.out.println("Liczę...");
 
-            AntAlgorithm aA = new AntAlgorithm(graph, startNode, endNode, numberOfIterations, seed);
-            aA.solve();
+            System.out.println("podaj wierzcholek poczatkowy (1-" + graph.length + ")");
+            int startNode = scanner.nextInt();
+            System.out.println("podaj wierzcholek koncowy");
+            int endNode = scanner.nextInt();
+            System.out.println("podaj liczbe iteracji");
+            int numberOfIterations = scanner.nextInt();
+            System.out.println("podaj ziarno");
+            int seed = scanner.nextInt();
 
-            System.out.println("Długość najlepszej ścieżki: " + aA.getPathLenght() );
-            System.out.println("Najlepsza ścieżka: " + Arrays.toString(aA.getPath()));
-        }
-        else
-        if( mode == 2)
-        {
-            System.out.println("podaj minimalną wartość parametru alfa");
-            double minAlfa = scanner.nextDouble();
-            System.out.println("podaj maksymalną wartość parametru alfa");
-            double maxAlfa = scanner.nextDouble();
-            System.out.println("podaj liczbę progów wartosci alfa");
-            int alfaSteps = scanner.nextInt();
-            System.out.println("podaj minimalną wartość parametru beta");
-            double minBeta = scanner.nextDouble();
-            System.out.println("podaj maksymalną wartość parametru beta");
-            double maxBeta = scanner.nextDouble();
-            System.out.println("podaj liczbę progów wartosci beta");
-            int betaSteps = scanner.nextInt();
-            System.out.println("podaj minimalną ilość wyparowywowania feromonów");
-            double minEvaporation = scanner.nextDouble();
-            System.out.println("podaj maksymalną wartość wyparowywowania feromonów");
-            double maxEvaporation = scanner.nextDouble();
-            System.out.println("podaj liczbę progów wyparowywowania feromonów");
-            int evaporationSteps = scanner.nextInt();
+            System.out.println("Wybierz tryb");
+            System.out.println("1 - pojedyncze uruchomienie");
+            System.out.println("2 - testowanie wydajnosci");
+            int mode = scanner.nextInt();
 
-            System.out.println("alfa\tbeta\twyparowywanie\tczas\twynik");
-            for( int i = 0; i < alfaSteps; ++i)
-            {
-                for( int j = 0; j < betaSteps; ++j )
-                {
-                    for( int k = 0; k < evaporationSteps; ++k )
-                    {
-                        for( int l = 0; l < 5; ++l )
-                        {
-                            double alfa = minAlfa + i * (maxAlfa - minAlfa)/(alfaSteps-1);
-                            double beta = minBeta + j * (maxBeta - minBeta)/(betaSteps-1);
-                            double evaporation = minEvaporation + k * (maxEvaporation - minEvaporation)/(evaporationSteps-1);
+            if (mode == 1) {
+                System.out.println("Liczę...");
 
-                            long millisActualTime = System.currentTimeMillis();
-                            AntAlgorithm aA = new AntAlgorithm(graph, startNode, endNode, numberOfIterations, seed, alfa, beta, evaporation);
-                            aA.solve();
-                            long executionTime = System.currentTimeMillis() - millisActualTime;
-                            System.out.println(alfa + "\t" + beta + "\t" + evaporation + "\t" + executionTime + "\t" + aA.getPathLenght());
+                AntAlgorithm aA = new AntAlgorithm(graph, startNode, endNode, numberOfIterations, seed);
+                aA.solve();
+
+                System.out.println("Długość najlepszej ścieżki: " + aA.getPathLenght());
+                System.out.println("Najlepsza ścieżka: " + Arrays.toString(aA.getPath()));
+            } else if (mode == 2) {
+                System.out.println("podaj minimalną wartość parametru alfa");
+                double minAlfa = scanner.nextDouble();
+                System.out.println("podaj maksymalną wartość parametru alfa");
+                double maxAlfa = scanner.nextDouble();
+                System.out.println("podaj liczbę progów wartosci alfa");
+                int alfaSteps = scanner.nextInt();
+                System.out.println("podaj minimalną wartość parametru beta");
+                double minBeta = scanner.nextDouble();
+                System.out.println("podaj maksymalną wartość parametru beta");
+                double maxBeta = scanner.nextDouble();
+                System.out.println("podaj liczbę progów wartosci beta");
+                int betaSteps = scanner.nextInt();
+                System.out.println("podaj minimalną ilość wyparowywowania feromonów");
+                double minEvaporation = scanner.nextDouble();
+                System.out.println("podaj maksymalną wartość wyparowywowania feromonów");
+                double maxEvaporation = scanner.nextDouble();
+                System.out.println("podaj liczbę progów wyparowywowania feromonów");
+                int evaporationSteps = scanner.nextInt();
+                System.out.println("podaj minimalną ilość wyparowywowania feromonów");
+                double minRandomFactor = scanner.nextDouble();
+                System.out.println("podaj maksymalną wartość wyparowywowania feromonów");
+                double maxRandomFactor = scanner.nextDouble();
+                System.out.println("podaj liczbę progów wyparowywowania feromonów");
+                int randomFactorSteps = scanner.nextInt();
+
+
+                System.out.println("alfa\tbeta\twyparowywanie\tczynnikLosowy\tczas\twynik");
+                for (int i = 0; i < alfaSteps; ++i) {
+                    for (int j = 0; j < betaSteps; ++j) {
+                        for (int k = 0; k < evaporationSteps; ++k) {
+                            for( int l = 0; l < randomFactorSteps; ++l ){
+                                for (int m = 0; m < 5; ++m) {
+                                    double alfa = minAlfa + i * (maxAlfa - minAlfa) / (alfaSteps - 1);
+                                    double beta = minBeta + j * (maxBeta - minBeta) / (betaSteps - 1);
+                                    double evaporation = minEvaporation + k * (maxEvaporation - minEvaporation) / (evaporationSteps - 1);
+                                    double randomFactor = minRandomFactor + l * (maxRandomFactor - minRandomFactor) / (randomFactorSteps - 1);
+
+                                    long millisActualTime = System.currentTimeMillis();
+                                    AntAlgorithm aA = new AntAlgorithm(graph, startNode, endNode, numberOfIterations,
+                                                                seed + m, alfa, beta, evaporation, randomFactor);
+                                    aA.solve();
+                                    long executionTime = System.currentTimeMillis() - millisActualTime;
+
+                                    System.out.println(alfa + "\t" + beta + "\t" + evaporation + "\t" +
+                                            randomFactor + "\t" + executionTime + "\t" + aA.getPathLenght());
+                                }
+                            }
                         }
                     }
                 }
+
             }
         }
-
-
-
+        catch(InputMismatchException e)
+        {
+            e.printStackTrace();
+            System.out.println("Błąd podczas wczytywania");
+        }
     }
+
     public static double[][] readGraph(String path,int version){
 
 

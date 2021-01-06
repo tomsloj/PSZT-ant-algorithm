@@ -46,7 +46,7 @@ public class AntAlgorithm {
     }
 
     AntAlgorithm( double[][] m , int startNode , int endNode, int numberOfIterations, int seed,
-                  double alpha, double beta, double evaporation ) {
+                  double alpha, double beta, double evaporation, double randomFactor ) {
         graph = m;
         this.numberOfNodes = graph.length;
         this.startNode = startNode - 1;
@@ -55,6 +55,7 @@ public class AntAlgorithm {
         this.alpha = alpha;
         this.beta = beta;
         this.evaporation = evaporation;
+        this.randomFactor = randomFactor;
 
         numberOfAnts = (int) (numberOfNodes * amountOfAntsPerNode);
 
