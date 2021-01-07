@@ -83,6 +83,11 @@ public class AntAlgorithm {
 
     public double getPathLenght()
     {
+        int i = 0;
+        while(bestTourOrder[i] != -1)
+            ++i;
+        if( bestTourOrder[i-1] != endNode )
+            return -1;
         return bestTourLength;
     }
 
@@ -126,20 +131,19 @@ public class AntAlgorithm {
     private void moveAnts() {
 
         for(int i = currentIndex ; i<numberOfNodes - 1;i++ ){
-        for(Ant ant : ants){
-            if(!ant.isVisited(endNode))
-            {
-                try{
-                    ant.visitNode(currentIndex, selectNextNode(ant));
-                }
-                catch (RuntimeException e)
+            for(Ant ant : ants){
+                if(!ant.isVisited(endNode))
                 {
+                    try{
+                        ant.visitNode(currentIndex, selectNextNode(ant));
+                    }
+                    catch (RuntimeException e)
+                    {
 
+                    }
                 }
-
             }
-        }
-        currentIndex++;
+            currentIndex++;
         }
     }
 
