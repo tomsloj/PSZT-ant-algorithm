@@ -116,6 +116,9 @@ public class AntAlgorithm {
      * przygotowanie mrowek do symulacji
      */
     private void setupAnts() {
+        while( ants.size() < numberOfAnts )
+            ants.add(new Ant(numberOfNodes));
+
         for( int i = 0; i < ants.size(); ++i )
         {
             ants.get(i).clearVisitedArray();
@@ -139,7 +142,19 @@ public class AntAlgorithm {
                     }
                     catch (RuntimeException e)
                     {
-
+                        ant.deactivation();
+                        //ślepa uliczka
+//                        if( ant.isActive() )
+//                        {
+//                            //System.out.println("Active");
+//                            ant.deactivation();
+//                            double toDelete = evaporation;
+//                            for( int j = 0; j < currentIndex - 1; ++j )
+//                            {
+//                                trails[ant.trail[currentIndex - j - 1]][ant.trail[currentIndex - j]] *= (1.0 - toDelete);
+//                                toDelete *= evaporation;
+//                            }
+//                        }
                     }
                 }
             }
@@ -223,7 +238,7 @@ public class AntAlgorithm {
             double contribution = amountOfAntPheromones / ant.trailLength(graph);
             for (int i = 0; i < numberOfNodes - 1; i++)
             {
-                if(ant.trail[i]!=-1 && ant.trail[i+1]!=-1)
+                if(ant.trail[i]!=-1 && ant.trail[i+1]!=-1 && ant.isActive())
                     trails[ant.trail[i]][ant.trail[i + 1]] += contribution;
             }
         }
@@ -261,7 +276,10 @@ public class AntAlgorithm {
         {
             for( int j = 0; j < numberOfNodes; ++j )
             {
-                trails[i][j] = c;
+                if(graph[i][j] > 0)
+                    trails[i][j] = c;
+                else
+                    trails[i][j] = 0;
             }
         }
     }

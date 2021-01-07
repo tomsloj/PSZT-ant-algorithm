@@ -67,7 +67,8 @@ public class Main {
                 System.out.println("podaj liczbę progów wyparowywowania feromonów");
                 int randomFactorSteps = scanner.nextInt();
 
-
+                FileWriter myWriter = new FileWriter("filename.txt");
+                //myWriter.write("alfa\tbeta\twyparowywanie\tczynnikLosowy\tczas\twynik\n");
                 System.out.println("alfa\tbeta\twyparowywanie\tczynnikLosowy\tczas\twynik");
                 for (int i = 0; i < alfaSteps; ++i) {
                     for (int j = 0; j < betaSteps; ++j) {
@@ -85,6 +86,8 @@ public class Main {
                                     aA.solve();
                                     long executionTime = System.currentTimeMillis() - millisActualTime;
 
+                                    //myWriter.write(alfa + "\t" + beta + "\t" + evaporation + "\t" +
+                                    //        randomFactor + "\t" + executionTime + "\t" + aA.getPathLenght() + "\n");
                                     System.out.println(alfa + "\t" + beta + "\t" + evaporation + "\t" +
                                             randomFactor + "\t" + executionTime + "\t" + aA.getPathLenght());
                                 }
@@ -99,6 +102,8 @@ public class Main {
         {
             e.printStackTrace();
             System.out.println("Błąd podczas wczytywania");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

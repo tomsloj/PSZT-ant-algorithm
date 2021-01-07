@@ -7,6 +7,8 @@ public class Ant
     private boolean visited[];
     int trail[];
 
+    private boolean active = true;
+
     Ant(int nodesNumber)
     {
         this.nodesNumber = nodesNumber;
@@ -16,6 +18,16 @@ public class Ant
 
         Arrays.fill(visited, false);
         Arrays.fill(trail, -1);
+    }
+
+    public boolean isActive()
+    {
+        return active;
+    }
+
+    public void deactivation()
+    {
+        active = false;
     }
 
     /**
@@ -53,6 +65,7 @@ public class Ant
     {
         Arrays.fill(visited, false);
         Arrays.fill(trail, -1);
+        active = true;
     }
 
 
