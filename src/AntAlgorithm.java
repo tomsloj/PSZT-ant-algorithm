@@ -128,7 +128,16 @@ public class AntAlgorithm {
         for(int i = currentIndex ; i<numberOfNodes - 1;i++ ){
         for(Ant ant : ants){
             if(!ant.isVisited(endNode))
-                ant.visitNode(currentIndex,selectNextNode(ant));
+            {
+                try{
+                    ant.visitNode(currentIndex, selectNextNode(ant));
+                }
+                catch (RuntimeException e)
+                {
+
+                }
+
+            }
         }
         currentIndex++;
         }
@@ -160,7 +169,7 @@ public class AntAlgorithm {
             }
         }
         for(int i = 0 ;i<numberOfNodes;i++){
-            if(!ant.isVisited(i)){
+            if(!ant.isVisited(i) && graph[ant.trail[currentIndex]][i] > 0){
                 return i;
             }
         }
@@ -182,7 +191,7 @@ public class AntAlgorithm {
         }
         for (int j = 0; j < numberOfNodes; j++)
         {
-            if (ant.isVisited(j) || graph[i][j] < 0)
+            if (ant.isVisited(j) || graph[i][j] < 0 || pheromone == 0)
             {
                 probabilities[j] = 0.0;
             }
@@ -220,12 +229,19 @@ public class AntAlgorithm {
      * aktualizujemy najlepsze rozwiazanie
      */
     private void updateBest() {
-        if (bestTourOrder == null) {
-            bestTourOrder = ants.get( ants.size() - 1 ).trail;
-            bestTourLength = ants.get( ants.size() - 1 )
-                    .trailLength(graph);
+        Ant a = ants.get(0);
+        for( int i = 0; i < ants.size(); ++i )
+        {
+            if( ants.get(i).trail[0] == startNode )
+            {
+                a = ants.get(i);
+            }
         }
-        Ant a = ants. get(ants.size() - 1);
+        if (bestTourOrder == null) {
+            bestTourOrder = a.trail;
+            bestTourLength = a.trailLength(graph);
+        }
+
         if (a.trailLength(graph) < bestTourLength)
         {
             bestTourLength = a.trailLength(graph);
