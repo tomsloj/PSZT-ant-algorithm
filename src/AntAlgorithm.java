@@ -256,12 +256,15 @@ public class AntAlgorithm {
                 a = ants.get(i);
             }
         }
-        if (bestTourOrder == null) {
+        int i = 0;
+        while(a.trail[i] != -1)
+            ++i;
+        if (bestTourOrder == null && a.trail[i-1] == endNode ) {
             bestTourOrder = a.trail;
             bestTourLength = a.trailLength(graph);
         }
 
-        if (a.trailLength(graph) < bestTourLength)
+        if (a.trailLength(graph) < bestTourLength && a.trail[i-1] == endNode)
         {
             bestTourLength = a.trailLength(graph);
             bestTourOrder = a.trail.clone();
