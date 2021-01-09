@@ -260,7 +260,7 @@ public class AntAlgorithm {
         while(a.trail[i] != -1)
             ++i;
         if (bestTourOrder == null && a.trail[i-1] == endNode ) {
-            bestTourOrder = a.trail;
+            bestTourOrder = a.trail.clone();
             bestTourLength = a.trailLength(graph);
         }
 
