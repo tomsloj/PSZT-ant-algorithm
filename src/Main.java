@@ -58,11 +58,11 @@ public class Main {
                 double minEvaporation = scanner.nextDouble();
                 System.out.println("podaj maksymalną wartość wyparowywowania feromonów");
                 double maxEvaporation = scanner.nextDouble();
-                System.out.println("podaj liczbę progów wyparowywowania feromonów");
+                System.out.println("podaj liczbę progów losowości");
                 int evaporationSteps = scanner.nextInt();
-                System.out.println("podaj minimalną ilość wyparowywowania feromonów");
+                System.out.println("podaj minimalną ilość losowości");
                 double minRandomFactor = scanner.nextDouble();
-                System.out.println("podaj maksymalną wartość wyparowywowania feromonów");
+                System.out.println("podaj maksymalną wartość losowości");
                 double maxRandomFactor = scanner.nextDouble();
                 System.out.println("podaj liczbę progów wyparowywowania feromonów");
                 int randomFactorSteps = scanner.nextInt();
