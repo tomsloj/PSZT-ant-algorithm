@@ -4,8 +4,8 @@ import java.util.stream.IntStream;
 public class AntAlgorithm {
     private int c = 1;
     private double alpha = 1;
-    private double beta = 5;
-    private double evaporation = 0.5; //ile feromonow odparowuje w kazdej iteracji
+    private double beta = 2;
+    private double evaporation = 0.2; //ile feromonow odparowuje w kazdej iteracji
     private double amountOfAntPheromones = 1000; //liczba feromonow zostawiana przez mrowke
     private double amountOfAntsPerNode = 1.0; //średnia liczba mrowek w jednym wierzcholku
     private double randomFactor = 0.01;
